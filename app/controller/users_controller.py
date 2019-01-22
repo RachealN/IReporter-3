@@ -55,3 +55,7 @@ class User:
         user = con.dict_cursor.fetchone()
         return user
 
+    def delete_user(self,user_id):
+        delete_user = "DELETE FROM users WHERE id=%s"
+        con.cursor.execute(delete_user, (user_id,))
+
