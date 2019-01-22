@@ -49,3 +49,9 @@ class User:
         users = con.dict_cursor.fetchall()
         return users
 
+    def get_user_by_userid(self,user_id):
+        get_user = "SELECT id,firstname,lastname,email,password,phonenumber,username FROM users WHERE id ='{0}'". format(user_id)
+        con.dict_cursor.execute(get_user)
+        user = con.dict_cursor.fetchone()
+        return user
+

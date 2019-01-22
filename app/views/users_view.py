@@ -80,3 +80,9 @@ def get_all_users():
     return jsonify({
         'users': user_db.get_users()
     }),200
+
+@Auth_blueprint.route('/auth/users/<int:user_id>', methods = ["GET"])
+def get_user(user_id):
+   return jsonify({
+        'user': user_db.get_user_by_userid(user_id)
+    })
