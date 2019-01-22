@@ -41,26 +41,26 @@ class DatabaseConnection:
             """CREATE TABLE IF NOT EXISTS
             redflags(
                 redflag_id SERIAL PRIMARY KEY NOT NULL,
-                id INTEGER,
+                createdBy SERIAL,
                 status VARCHAR(20),
                 createdOn TIMESTAMPTZ DEFAULT Now(),
                 location VARCHAR(30),
                 image VARCHAR(30),
                 video VARCHAR(30),
                 comment VARCHAR(100),
-                FOREIGN KEY (id) REFERENCES users(id) ON UPDATE CASCADE
+                FOREIGN KEY (createdBy) REFERENCES users(id) ON UPDATE CASCADE
                 );""")
 
         create_interventions_table = (
             """CREATE TABLE IF NOT EXISTS
            interventions(
                 intervention_id SERIAL PRIMARY KEY NOT NULL,
-                id INTEGER,
+                createdBy SERIAL,
                 status VARCHAR(20),
                 createdOn TIMESTAMPTZ DEFAULT Now(),
                 location VARCHAR(30),
                 comment VARCHAR(100),
-                FOREIGN KEY (id) REFERENCES users(id) ON UPDATE CASCADE
+                FOREIGN KEY (createdBy) REFERENCES users(id) ON UPDATE CASCADE
                 );""")
 
 

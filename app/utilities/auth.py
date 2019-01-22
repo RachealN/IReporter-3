@@ -51,6 +51,7 @@ class AuthHelper:
                 
                 current_user = jwt.decode(payload,self.secret_key)
                
+               
                 
             except:
                 return jsonify({'message':'Token is invalid'}),401

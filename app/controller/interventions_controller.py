@@ -15,3 +15,7 @@ class Intervention:
         
             create_intervention= "INSERT INTO interventions (status, location, comment) VALUES (%s,%s,%s)"
             con.cursor.execute(create_intervention, ( status, location, comment))
+
+    def update_location(self,location):
+        update_location = " UPDATE interventions SET location='{}'".format(location)
+        con.cursor.execute(update_location)

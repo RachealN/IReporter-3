@@ -14,8 +14,8 @@ record = Intervention()
 
 @intervention_blueprint.route('/interventions', methods = ["POST"])
 def create_intervention():
-    request_data = request.get_json()
-
+    
+    
    
     request_data = request.get_json(force=True)
     id = 1
@@ -34,4 +34,21 @@ def create_intervention():
     record.create_intervention(status, location,comment)
 
     return jsonify({"message": "Created intervention record"}), 201
+
+@intervention_blueprint.route('/interventions/<int:id>/location', methods = ['PATCH'])
+def patch_location(id):
+
+    request_data = request.get_json()
+
+    location = request_data['location']
+
+    if not (validate_input.validate_digits_input(location)):
+        return jsonify({"message": "location Field should contain an integer"}), 400
+        
+    record.update_location(location)
+    return jsonify({"message":"Updated intervention record’s location"})
+
+
+
+    
 
