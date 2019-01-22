@@ -43,3 +43,9 @@ class User:
         row = con.cursor.fetchone()
         return row
 
+    def get_users(self):
+        get_all = "SELECT id,firstname,lastname,email,password,phonenumber,username FROM users"
+        con.dict_cursor.execute(get_all)
+        users = con.dict_cursor.fetchall()
+        return users
+

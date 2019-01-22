@@ -6,10 +6,10 @@ from app.utilities.auth import AuthHelper
 
 Auth_blueprint = Blueprint("Auth_blueprint", __name__)
 
-register = Validator()
+validate_input = Validator()
 user_db = User()
 token = AuthHelper()
-login = Validator()
+
 
 
 
@@ -30,10 +30,10 @@ def register_user():
     
 
     
-    if not register.validate_email(email):
+    if not validate_input.validate_email(email):
         return jsonify({'message':'You have an invalid email or the email is missing'}),400
 
-    if not register.validate_password(password):
+    if not validate_input.validate_password(password):
         return jsonify({'message':'You have an invalid password or password is missing'}),400
 
 
@@ -58,10 +58,10 @@ def login_user():
     email = request_data['email']
     password = request_data['password']
     
-    if not login.validate_email(email):
+    if not validate_input.validate_email(email):
         return jsonify({"message": "You entered an invalid email or email is missing"}), 401
 
-    if not login.validate_password(password):
+    if not validate_input.validate_password(password):
         return jsonify({"message": "You entered an invalid password or password should be atleast 8 characters long"}), 401
 
 
@@ -73,3 +73,10 @@ def login_user():
             'auth_token': payload}), 200
 
     return jsonify({"message": "You are not a system user"}), 401
+
+
+@Auth_blueprint.route('/auth/users', methods = ["GET"])
+def get_all_users():
+    return jsonify({
+        'users': user_db.get_users()
+    }),200
