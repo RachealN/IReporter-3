@@ -93,3 +93,12 @@ def Delete_user(user_id):
        'user':user_db.delete_user(user_id),
        'message': 'user deleted succesfully'
     })
+
+@Auth_blueprint.route('/auth/users/<int:user_id>', methods = ["PUT"])
+def update_user(user_id):
+    return jsonify({
+       'user':user_db.update_user(user_id),
+       'message':'user updated succesfully' 
+
+    })
+    
