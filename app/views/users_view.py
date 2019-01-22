@@ -76,7 +76,14 @@ def login_user():
 
 
 @Auth_blueprint.route('/auth/users', methods = ["GET"])
-def get_all_users():
+@token.token_required
+def get_all_users(current_user):
+    current_user=current_user.get('sub')
+    print(current_user)
+    # if current_user.get('isAdmin') is  'False':
+    #     return jsonify({
+    #         'message':'You  cannot perform this function'
+    #     }),401
     return jsonify({
         'users': user_db.get_users()
     }),200

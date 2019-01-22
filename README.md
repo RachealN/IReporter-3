@@ -1,9 +1,6 @@
 [![Build Status](https://travis-ci.org/RachealN/IReporter-3.svg?branch=develop)](https://travis-ci.org/RachealN/IReporter-3)
-
 [![Coverage Status](https://coveralls.io/repos/github/RachealN/IReporter-3/badge.svg?branch=develop)](https://coveralls.io/github/RachealN/IReporter-3?branch=develop)
-
 [![Maintainability](https://api.codeclimate.com/v1/badges/9af5ddd03ddedb899317/maintainability)](https://codeclimate.com/github/RachealN/IReporter-3/maintainability)
-
 [![Test Coverage](https://api.codeclimate.com/v1/badges/9af5ddd03ddedb899317/test_coverage)](https://codeclimate.com/github/RachealN/IReporter-3/test_coverage)
 
 # IReporter-3
