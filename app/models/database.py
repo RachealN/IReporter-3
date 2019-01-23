@@ -37,6 +37,8 @@ class DatabaseConnection:
                 isAdmin VARCHAR(20) DEFAULT False
             );"""
         )
+
+       
         create_redflags_table = (
             """CREATE TABLE IF NOT EXISTS
             redflags(
@@ -62,6 +64,7 @@ class DatabaseConnection:
                 comment VARCHAR(100),
                 FOREIGN KEY (createdBy) REFERENCES users(id) ON UPDATE CASCADE
                 );""")
+
 
 
         """

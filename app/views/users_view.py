@@ -42,15 +42,19 @@ def register_user():
         return jsonify({'message':'Email already exists'}),400
 
     user_db.register_user(request_data['firstname'],request_data['lastname'],request_data['email'],request_data['password'],request_data['phonenumber'],request_data['username'])
-    user_db.check_user_by_email(email)
-    return jsonify({'message':'user created successfully'}),201
+    return jsonify({
+        'status':201,
+        'message':'user created successfully',
+        'data':user_db.check_user_by_email(email)
+        }),201
 
+    
 
 
 @Auth_blueprint.route('/auth/login', methods = ["POST"])
 def login_user():
 
-    """Handle POST request for this Endpoint. Url ---> /api/vi/auth/login"""
+    """Handle POST request for this Endpoint. Url ---> /api/vi/authcd/login"""
 
     request_data = request.get_json(force=True)
     if len(request_data.keys()) != 2:
@@ -69,42 +73,68 @@ def login_user():
     if check_user:
         payload = token.encode_auth_token(check_user)
         return jsonify({
+            'status':200,
             'message': 'login successful',
-            'auth_token': payload}), 200
+            'token': payload}), 200
 
     return jsonify({"message": "You are not a system user"}), 401
 
 
 @Auth_blueprint.route('/auth/users', methods = ["GET"])
-@token.token_required
-def get_all_users(current_user):
-    current_user=current_user.get('sub')
-    print(current_user)
-    # if current_user.get('isAdmin') is  'False':
-    #     return jsonify({
-    #         'message':'You  cannot perform this function'
-    #     }),401
+def get_all_users():
+    users = user_db.get_users()
+    if not users:
+        return jsonify({
+            'status':200,
+            'message':'user with that id doesnot exist'
+        }),200
+
     return jsonify({
-        'users': user_db.get_users()
+        'status':200,
+        'data': users
     }),200
 
 @Auth_blueprint.route('/auth/users/<int:user_id>', methods = ["GET"])
 def get_user(user_id):
-   return jsonify({
-        'user': user_db.get_user_by_userid(user_id)
-    })
+    user = user_db.get_user_by_userid(user_id)
+    if not user:
+        return jsonify({
+            'status':200,
+            'message':'user with that id doesnot exist'
+        }),200
+    return jsonify({
+        'status':400,
+        'data': user
+        
+    }),400
 
 @Auth_blueprint.route('/auth/users/<int:user_id>', methods = ["DELETE"])
 def Delete_user(user_id):
+    user = user_db.delete_user(user_id)
+    if not user:
+        return jsonify({
+            'status':401,
+            'message':'user with that id doesnot exist'
+        }),200
     return jsonify({
-       'user':user_db.delete_user(user_id),
-       'message': 'user deleted succesfully'
-    })
+       'status':200,
+       'message': 'user deleted succesfully',
+       'data':user
+    }),200
 
 @Auth_blueprint.route('/auth/users/<int:user_id>', methods = ["PUT"])
 def update_user(user_id):
+    
+    user = user_db.update_user(user_id)
+
+    if not user:
+        return jsonify({
+            'status':200,
+            'message':'user with that id doesnot exist'
+        }),200
+
     return jsonify({
-       'user':user_db.update_user(user_id),
+        'status':201,
        'message':'user updated succesfully' 
 
     })

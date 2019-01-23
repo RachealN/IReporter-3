@@ -14,12 +14,12 @@ class User:
                                          VALUES (%s,%s,%s,%s,%s,%s)"
         con.cursor.execute(reg_user, (firstname,lastname,email,password,phonenumber,username))
 
-    def register_admin(self,firstname,lastname,email,password,phonenumber,username):
+    def register_admin(self,firstname,lastname,email,password,phonenumber,username,isAdmin):
         """This Function registers a user"""
 
-        reg_user = "INSERT INTO users (firstname,lastname,email,password,phonenumber,username)\
-                                         VALUES (%s,%s,%s,%s,%s,%s)"
-        con.cursor.execute(reg_user, (firstname,lastname,email,password,phonenumber,username))
+        register_admin= "INSERT INTO users (firstname,lastname,email,password,phonenumber,username,isAdmin)\
+                                         VALUES (%s,%s,%s,%s,%s,%s,%s)"
+        con.cursor.execute(register_admin, (firstname,lastname,email,password,phonenumber,username,isAdmin))
        
     def check_user_by_username(self,username):
 
