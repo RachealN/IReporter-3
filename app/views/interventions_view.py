@@ -1,5 +1,6 @@
 from flask import Blueprint,request,json,jsonify
 from app.controller.interventions_controller import Intervention
+from app.controller.users_controller import User
 from app.validation import Validator
 import datetime
 
@@ -31,9 +32,12 @@ def create_intervention():
     if not (validate_input.validate_string_input(comment)):
         return jsonify({"message": "comment Field should contain strings"}), 400
     
+    
     record.create_intervention(status, location,comment)
+   
 
-    return jsonify({"message": "Created intervention record"}), 201
+    return jsonify({'status':201,
+                    'message':'intervention record created'})
 
 @intervention_blueprint.route('/interventions/<int:id>/location', methods = ['PATCH'])
 def patch_location(id):
@@ -60,6 +64,20 @@ def patch_comment(id):
         
     record.update_comment(comment)
     return jsonify({"message":"Updated intervention record’s comment"}),201
+
+
+@intervention_blueprint.route('/interventions/<int:intervention_id>/status', methods = ['PATCH'])
+def update_status(intervention_id):
+
+    request_data = request.get_json()
+
+    status = request_data['status']
+   
+
+    intervene = record.update_status(status,intervention_id)
+    print(intervene)
+    return jsonify({"message": "Your status has been updated ",
+                    "updated status": intervene}), 200
 
 
 

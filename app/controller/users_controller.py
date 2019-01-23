@@ -63,8 +63,11 @@ class User:
         return user
 
     def delete_user(self,user_id):
-        delete_user = "DELETE FROM users WHERE id=%s"
+        delete_user = "DELETE FROM users WHERE id='{0}'".format(user_id)
         con.cursor.execute(delete_user, (user_id,))
+        
+        
+        
 
     def update_user(self,id):
         update_user = " UPDATE users SET email= email WHERE id=id"
