@@ -12,14 +12,14 @@ class User:
 
         reg_user = "INSERT INTO users (firstname,lastname,email,password,phonenumber,username)\
                                          VALUES (%s,%s,%s,%s,%s,%s)"
-        con.cursor.execute(reg_user, (firstname,lastname,email,password,phonenumber,username))
+        con.dict_cursor.execute(reg_user, (firstname,lastname,email,password,phonenumber,username))
 
-    def register_admin(self,firstname,lastname,email,password,phonenumber,username,isAdmin):
-        """This Function registers a user"""
+    # def register_admin(self,firstname,lastname,email,password,phonenumber,username,isAdmin):
+    #     """This Function registers a user"""
 
-        register_admin= "INSERT INTO users (firstname,lastname,email,password,phonenumber,username,isAdmin)\
-                                         VALUES (%s,%s,%s,%s,%s,%s,%s)"
-        con.cursor.execute(register_admin, (firstname,lastname,email,password,phonenumber,username,isAdmin))
+    #     register_admin= "INSERT INTO users (firstname,lastname,email,password,phonenumber,username,isAdmin)\
+    #                                      VALUES (%s,%s,%s,%s,%s,%s,%s)"
+    #     con.cursor.execute(register_admin, (firstname,lastname,email,password,phonenumber,username,isAdmin))
        
     def check_user_by_username(self,username):
 
@@ -37,8 +37,9 @@ class User:
 
         check_for_unique_email = "SELECT id,firstname,lastname,email,password,phonenumber,username\
                                  FROM users WHERE email = %s"
-        con.cursor.execute(check_for_unique_email, (email,))
-        row = con.cursor.fetchone()
+        con.dict_cursor.execute(check_for_unique_email, (email,))
+        row = con.dict_cursor.fetchone()
+        
         return row
 
     def login(self,email):
@@ -46,8 +47,8 @@ class User:
         """This function logins in a user"""
 
         check_unique_email = "SELECT email WHERE username =%s"
-        con.cursor.execute(check_unique_email,(email))
-        row = con.cursor.fetchone()
+        con.dict_cursor.execute(check_unique_email,(email))
+        row = con.dict_cursor.fetchone()
         return row
 
     def get_users(self):
