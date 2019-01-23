@@ -49,39 +49,7 @@ def register_user():
         }),201
 
     
-@Auth_blueprint.route('/auth/admin', methods = ["POST"])
-def register_admin():
 
-    """Handle POST request for this Endpoint. Url ---> /api/v1/auth/admin"""
-
-    request_data = request.get_json()
-
-    firstname = request_data['firstname']
-    lastname = request_data['lastname']
-    email = request_data['email']
-    password = request_data['password']
-    phonenumber = request_data['phonenumber']
-    username = request_data['username']
-    isAdmin = request_data['isAdmin']
-    
-
-    
-    if not validate_input.validate_email(email):
-        return jsonify({'message':'You have an invalid email or the email is missing'}),400
-
-    if not validate_input.validate_password(password):
-        return jsonify({'message':'You have an invalid password or password is missing'}),400
-
-
-    
-    if user_db.check_user_by_email(email):
-        return jsonify({'message':'Email already exists'}),400
-
-    user_db.register_admin(request_data['firstname'],request_data['lastname'],request_data['email'],request_data['password'],request_data['phonenumber'],request_data['isAdmin'])
-    user_db.check_user_by_email(email)
-    return jsonify({'message':'user admin created successfully'}),201
-
-    
 
 @Auth_blueprint.route('/auth/login', methods = ["POST"])
 def login_user():
@@ -118,7 +86,7 @@ def get_all_users():
     if not users:
         return jsonify({
             'status':200,
-            'message':'user not found'
+            'message':'user with that id doesnot exist'
         }),200
 
     return jsonify({

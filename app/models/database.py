@@ -38,20 +38,7 @@ class DatabaseConnection:
             );"""
         )
 
-        create_admin_table = (
-            """CREATE TABLE IF NOT EXISTS
-            users(
-                id SERIAL PRIMARY KEY NOT NULL,
-                firstname VARCHAR(50) NOT NULL,
-                lastname VARCHAR(50) NOT NULL,
-                email VARCHAR(50) UNIQUE,
-                password INTEGER NOT NULL,
-                phonenumber INTEGER NOT NULL,
-                username VARCHAR(50) NOT NULL,
-                registered TIMESTAMPTZ DEFAULT Now(),
-                isAdmin VARCHAR(20) DEFAULT True
-            );"""
-        )
+       
         create_redflags_table = (
             """CREATE TABLE IF NOT EXISTS
             redflags(
