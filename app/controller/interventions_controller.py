@@ -19,3 +19,8 @@ class Intervention:
     def update_location(self,location):
         update_location = " UPDATE interventions SET location='{}'".format(location)
         con.cursor.execute(update_location)
+
+    
+    def update_comment(self,comment):
+        update_comment = " UPDATE interventions SET comment='{}'".format(comment)
+        con.cursor.execute(update_comment)

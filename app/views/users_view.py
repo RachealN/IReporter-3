@@ -117,9 +117,9 @@ def get_all_users():
     users = user_db.get_users()
     if not users:
         return jsonify({
-            'status':200,
+            'status':400,
             'message':'user not found'
-        }),200
+        }),400
 
     return jsonify({
         'status':200,
@@ -131,21 +131,20 @@ def get_user(user_id):
     user = user_db.get_user_by_userid(user_id)
     if not user:
         return jsonify({
-            'status':200,
+            'status':400,
             'message':'user with that id doesnot exist'
-        }),200
+        }),400
     return jsonify({
-        'status':400,
+        'status':200,
         'data': user
-        
-    }),400
+        }),200
 
 @Auth_blueprint.route('/auth/users/<int:user_id>', methods = ["DELETE"])
 def Delete_user(user_id):
     user = user_db.delete_user(user_id)
     if not user:
         return jsonify({
-            'status':401,
+            'status':400,
             'message':'user with that id doesnot exist'
         }),200
     return jsonify({
@@ -161,9 +160,9 @@ def update_user(user_id):
 
     if not user:
         return jsonify({
-            'status':200,
+            'status':400,
             'message':'user with that id doesnot exist'
-        }),200
+        }),400
 
     return jsonify({
         'status':201,
