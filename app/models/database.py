@@ -37,32 +37,33 @@ class DatabaseConnection:
                 isAdmin VARCHAR(20) DEFAULT False
             );"""
         )
+        
 
        
         create_redflags_table = (
             """CREATE TABLE IF NOT EXISTS
             redflags(
                 redflag_id SERIAL PRIMARY KEY NOT NULL,
-                createdBy SERIAL,
+                createdBy SERIAL REFERENCES users(id) ON UPDATE CASCADE, 
                 status VARCHAR(20),
                 createdOn TIMESTAMPTZ DEFAULT Now(),
                 location VARCHAR(30),
                 image VARCHAR(30),
                 video VARCHAR(30),
-                comment VARCHAR(100),
-                FOREIGN KEY (createdBy) REFERENCES users(id) ON UPDATE CASCADE
+                comment VARCHAR(100)
                 );""")
 
         create_interventions_table = (
             """CREATE TABLE IF NOT EXISTS
            interventions(
                 intervention_id SERIAL PRIMARY KEY NOT NULL,
-                createdBy SERIAL,
+                createdBy SERIAL REFERENCES users(id) ON UPDATE CASCADE,
                 status VARCHAR(20),
                 createdOn TIMESTAMPTZ DEFAULT Now(),
                 location VARCHAR(30),
-                comment VARCHAR(100),
-                FOREIGN KEY (createdBy) REFERENCES users(id) ON UPDATE CASCADE
+                image VARCHAR(30),
+                video VARCHAR(30),
+                comment VARCHAR(100)
                 );""")
 
 
@@ -73,6 +74,7 @@ class DatabaseConnection:
         self.cursor.execute(create_users_table)
         self.cursor.execute(create_redflags_table)
         self.cursor.execute(create_interventions_table)
+        
         
     def drop_table(self, table_name):
         """

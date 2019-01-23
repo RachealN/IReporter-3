@@ -75,7 +75,7 @@ def login_user():
         return jsonify({
             'status':200,
             'message': 'login successful',
-            'token': payload,
+            'token': payload[0],
             'user':check_user}), 200
 
     return jsonify({"message": "You are not a system user"}), 401
@@ -136,7 +136,7 @@ def update_user(user_id):
             'status':400,
             'data':[{'message':'user with that id doesnot exist'}]
         }),400
-
+    user_db.update_user(user_id)
     return jsonify({
         'status':201,
        'data':[{'message':'user updated succesfully'}]

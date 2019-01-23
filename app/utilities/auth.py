@@ -30,6 +30,11 @@ class AuthHelper:
         Token = jwt.decode(payload, self.secret_key, algorithms=['HS256'])
         return Token
         
+    def createdby_id(self):
+        data = request.headers['Authorization']
+        user_id = self.decode_token(data)
+        return user_id["sub"]["id"]
+
 
     
     def token_required(self,f):
@@ -41,7 +46,7 @@ class AuthHelper:
             
             
             if 'Authorization' in request.headers:
-                payload = request.headers['Authorization'].split(" ")[1]
+                payload = request.headers['Authorization']
                 
             if not payload:
                 return jsonify({'message':'Token is missing'}), 401
@@ -59,3 +64,6 @@ class AuthHelper:
         return decorated
 
 
+# print(AuthHelper().encode_auth_token(1))
+
+print(AuthHelper().decode_token('eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjEsImV4cCI6MTU0ODI3MTM5MH0.SlPmMK3qDN57LNipUyOZfY8twJ8wQzIfuf1Ecjxufdc'))
