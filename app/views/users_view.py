@@ -75,7 +75,8 @@ def login_user():
         return jsonify({
             'status':200,
             'message': 'login successful',
-            'token': payload}), 200
+            'token': payload,
+            'user':check_user}), 200
 
     return jsonify({"message": "You are not a system user"}), 401
 
@@ -85,9 +86,9 @@ def get_all_users():
     users = user_db.get_users()
     if not users:
         return jsonify({
-            'status':200,
+            'status':400,
             'message':'user with that id doesnot exist'
-        }),200
+        }),400
 
 
     return jsonify({
@@ -101,7 +102,7 @@ def get_user(user_id):
     if not user:
         return jsonify({
             'status':400,
-            'message':'user with that id doesnot exist'
+            'data':[{'message':'user with that id doesnot exist'}]
         }),400
     return jsonify({
         'status':200,
@@ -110,32 +111,35 @@ def get_user(user_id):
 
 @Auth_blueprint.route('/auth/users/<int:user_id>', methods = ["DELETE"])
 def Delete_user(user_id):
-    user = user_db.delete_user(user_id)
-    if not user:
+    
+    userId = user_db.get_user_by_userid(user_id)
+    
+    
+    if not  userId:
         return jsonify({
             'status':400,
-            'message':'user with that id doesnot exist'
-        }),200
+            'data':[{'message': 'user with that id is not found'}]
+        }),400
+    user_db.delete_user(user_id)
     return jsonify({
        'status':200,
-       'message': 'user deleted succesfully',
-       'data':user
+       'data':[{'id':user_id,'message': 'user deleted succesfully'}]
     }),200
 
 @Auth_blueprint.route('/auth/users/<int:user_id>', methods = ["PUT"])
 def update_user(user_id):
     
-    user = user_db.update_user(user_id)
+    userId = user_db.get_user_by_userid(user_id)
 
-    if not user:
+    if not userId:
         return jsonify({
             'status':400,
-            'message':'user with that id doesnot exist'
+            'data':[{'message':'user with that id doesnot exist'}]
         }),400
 
     return jsonify({
         'status':201,
-       'message':'user updated succesfully' 
+       'data':[{'message':'user updated succesfully'}]
 
     })
     
