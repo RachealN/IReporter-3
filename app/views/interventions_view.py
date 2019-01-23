@@ -48,6 +48,20 @@ def patch_location(id):
     record.update_location(location)
     return jsonify({"message":"Updated intervention record’s location"})
 
+@intervention_blueprint.route('/interventions/<int:id>/comment', methods = ['PATCH'])
+def patch_comment(id):
+
+    request_data = request.get_json()
+
+    comment = request_data['comment']
+
+    if not (validate_input.validate_string_input(comment)):
+        return jsonify({"message": "comment Field should contain a string"}), 400
+        
+    record.update_comment(comment)
+    return jsonify({"message":"Updated intervention record’s comment"}),201
+
+
 
 
     
