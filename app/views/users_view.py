@@ -26,7 +26,19 @@ def register_user():
     password = request_data['password']
     phonenumber = request_data['phonenumber']
     username = request_data['username']
-    isAdmin = True
+    
+    
+
+    validate_email = Validator().validate_email(email)
+    validate_firstname = Validator().validate_string_input(firstname)
+    validate_lastname= Validator().validate_string_input(lastname)
+    validate_password = Validator().validate_password(password)
+    validate_phonenumber = Validator().validate_digits_input(phonenumber)
+
+    if not validate_email or not validate_lastname or not validate_password \
+    or not validate_phonenumber or not validate_firstname:
+        return jsonify({'message':'some fields are missing or incorrect'}),400
+
     
 
     
@@ -66,7 +78,7 @@ def login_user():
         return jsonify({"message": "You entered an invalid email or email is missing"}), 401
 
     if not validate_input.validate_password(password):
-        return jsonify({"message": "You entered an invalid password or password should be atleast 8 characters long"}), 401
+        return jsonify({"message": "You entered an invalid password "}), 401
 
 
     check_user = user_db.check_user_by_email(email)
@@ -142,4 +154,7 @@ def update_user(user_id):
        'data':[{'message':'user updated succesfully'}]
 
     })
+
+
+    
     

@@ -19,11 +19,11 @@ required = AuthHelper()
 @intervention_blueprint.route('/interventions', methods = ["POST"])
 @required.token_required
 def create_intervention(current_user):
+
+    """Endpoint creating intervention"""
     
     
-   
     request_data = request.get_json(force=True)
-    # id = 1
     status = 'pending'
     createdOn = datetime.date.today().strftime('%Y-%m-%d')
     location = request_data['location']
@@ -32,31 +32,45 @@ def create_intervention(current_user):
     comment = request_data['comment']
 
     
-    
     if not (validate_input.validate_digits_input(location)):
         return jsonify({"message": "location Field should contain an integer"}), 400
    
     if not (validate_input.validate_string_input(comment)):
         return jsonify({"message": "comment Field should contain strings"}), 400
+
+    if not (validate_input.validate_string_input(image)):
+        return jsonify({"message": "image Field should contain strings"}), 400
     
+    if not (validate_input.validate_string_input(video)):
+        return jsonify({"message": "video Field should contain strings"}), 400
     
     
     record = intervention_db.create_intervention(status, location,image,video,comment)
     print(record)
     interventionId = intervention_db.get_single_intervention(record['intervention_id'])
     
-   
+    current_user=current_user.get('sub')
+    if current_user.get('isAdmin') is  False:
+        return jsonify({
+            'message':'You  cannot perform this function'
+        }),401
 
     return jsonify({'status':201,
                     'data':[{'id':record['intervention_id'],'message':'intervention record created'}]
     }),201
 
 @intervention_blueprint.route('/interventions/<int:intervention_id>/location', methods = ['PATCH'])
-def patch_location(intervention_id):
+@required.token_required
+def patch_location(current_user,intervention_id):
+
+    """Endpoint forupdating location"""
 
     request_data = request.get_json()
 
     location = request_data['location']
+
+    if len(request_data.keys()) != 1:
+        return jsonify({"message": "Some fields are missing"}), 400
 
     if not (validate_input.validate_digits_input(location)):
         return jsonify({"message": "location Field should contain an integer"}), 400
@@ -65,18 +79,28 @@ def patch_location(intervention_id):
     intervien = intervention_db.update_location(location,intervention_id)
     interventionId = intervention_db.get_single_intervention(intervien['intervention_id'])
 
+    
     if not intervien:
         return jsonify({
             'status':400,
             'data':[{'message': 'intervention record with that id doesnot exist'}]
         }),400
+    
+    current_user=current_user.get('sub')
+    if current_user.get('isAdmin') is False:
+        return jsonify({
+            'message':'You  cannot perform this function'
+        }),401
     return jsonify({"status": 200,
                     "data":[{'id':intervien['intervention_id'], 'message':"Updated intervention record’s location"}]
                     }), 200
     
 
 @intervention_blueprint.route('/interventions/<int:intervention_id>/comment', methods = ['PATCH'])
-def patch_comment(intervention_id):
+@required.token_required
+def patch_comment(current_user,intervention_id):
+
+    """Endpoint for updating comment"""
 
     request_data = request.get_json()
 
@@ -94,12 +118,22 @@ def patch_comment(intervention_id):
             'status':400,
             'data':[{'message': 'intervention record with that id doesnot exist'}]
         }),400
+    
+    current_user=current_user.get('sub')
+    if current_user.get('isAdmin') is  False:
+        return jsonify({
+            'message':'You  cannot perform this function'
+        }),401
+
     return jsonify({"status": 200,
                     "data":[{'id':intervien['intervention_id'], 'message':"Updated intervention record’s comment"}]
                     }), 200
 
 @intervention_blueprint.route('/interventions/<int:intervention_id>/status', methods = ['PATCH'])
-def update_status(intervention_id):
+@required.token_required
+def update_status(current_user,intervention_id):
+
+    """Endpoint for updating status"""
 
     request_data = request.get_json()
 
@@ -108,22 +142,39 @@ def update_status(intervention_id):
     if not (validate_input.validate_string_input(status)):
         return jsonify({"message": "status Field should contain a string"}), 400
 
+    if len(request_data.keys()) != 1:
+        return jsonify({"message": "Some fields are missing"}), 400
+
     intervien = intervention_db.update_status(status,intervention_id)
+    print(intervien)
     interventionId = intervention_db.get_single_intervention(intervien['intervention_id'])
    
-    print(intervien)
+    
+    if not interventionId or interventionId['status'] == 'rejected':
+        return jsonify({"message": "The intervention record you are editing doesnt exist"}), 404
+
     if not intervien:
         return jsonify({
             'status':400,
             'data':[{'message': 'intervention record with that id doesnot exist'}]
         }),400
+
+    current_user=current_user.get('sub')
+    if current_user.get('isAdmin') is not False:
+        return jsonify({
+            'message':'You  cannot perform this function'
+        }),401
+
     return jsonify({"status": 200,
                     "data":[{'id':intervien['intervention_id'], 'message':'Updated intervention record status'}]
                     }), 200
 
             
 @intervention_blueprint.route('/interventions/<int:intervention_id>', methods = ["DELETE"])
-def delete_intervention(intervention_id):
+@required.token_required
+def delete_intervention(current_user,intervention_id):
+
+    """Endpoint for deleting intervention """
     
     
     intervien = intervention_db.get_single_intervention(intervention_id)
@@ -135,6 +186,13 @@ def delete_intervention(intervention_id):
             'data':[{'message': 'intervention with that id is not found'}]
         }),400
 
+    current_user=current_user.get('sub')
+    if current_user.get('isAdmin') is False:
+        return jsonify({
+            'message':'You  cannot perform this function'
+        }),401
+
+
     intervention_db.delete_intervention(intervention_id)
     return jsonify({
        'status':200,
@@ -142,7 +200,10 @@ def delete_intervention(intervention_id):
     }),200
 
 @intervention_blueprint.route('/interventions/<int:intervention_id>', methods = ["GET"])
-def get_single_intervention(intervention_id):
+@required.token_required
+def get_single_intervention(current_user,intervention_id):
+
+    """Endpoint for getting a specific intervention"""
     
     
     intervention = intervention_db.get_single_intervention(intervention_id)
@@ -152,22 +213,37 @@ def get_single_intervention(intervention_id):
             'status':400,
             'data':[{'message':'intervention with that id doesnot exist'}]
         }),400
+
+    current_user=current_user.get('sub')
+    if current_user.get('isAdmin') is False:
+        return jsonify({
+            'message':'You  cannot perform this function'
+        }),401
+
     return jsonify({
         'status':200,
         'data': intervention
         }),200
 
 @intervention_blueprint.route('/interventions', methods = ["GET"])
-def get_interventions():
+@required.token_required
+def get_interventions(current_user):
 
-    #  users = user_db.get_users()
+    """Endpoint for getting intervention"""
+
+   
     interventions = intervention_db.get_all_interventions()
     if not interventions:
         return jsonify({
             'status':400,
             'message':'intervention with that id doesnot exist'
         }),400
-
+    
+    current_user=current_user.get('sub')
+    if current_user.get('isAdmin') is False:
+        return jsonify({
+            'message':'You  cannot perform this function'
+        }),401
 
     return jsonify({
         'status':200,

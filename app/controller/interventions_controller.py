@@ -15,9 +15,9 @@ class Intervention:
 
            
         
-            create_intervention= "INSERT INTO interventions (createdBy,status, location,image,video, comment) VALUES ('{}','{}','{}','{}','{}','{}') RETURNING intervention_id".format(created.createdby_id(),status,location,image,video,comment)
+            create_intervention= "INSERT INTO interventions (status, location,image,video, comment) VALUES ('{}','{}','{}','{}','{}') RETURNING intervention_id".format(status,location,image,video,comment)
             
-            con.dict_cursor.execute(create_intervention)
+            con.dict_cursor.execute(create_intervention,(status,location,image,video,comment))
             return con.dict_cursor.fetchone()
             
             
@@ -35,8 +35,11 @@ class Intervention:
 
     def update_status(self,status,intervention_id):
         update_status = "UPDATE interventions SET status='{}' WHERE intervention_id='{}' RETURNING intervention_id".format(status,intervention_id)
+        print(update_status)
         con.dict_cursor.execute(update_status)
-        return con.dict_cursor.fetchone()
+        inter = con.dict_cursor.fetchone()
+
+        return inter
 
     
 
