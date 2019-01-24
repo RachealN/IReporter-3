@@ -130,7 +130,7 @@ or this to run tests without coverage
 
 #Link to Heroku
 
-```https://dashboard.heroku.com/apps/ireportercorruption```
+
 
 
 # Author
