@@ -7,10 +7,12 @@ class DatabaseConnection:
     def __init__(self):
         try:
             self.connection = dict(
-                database = 'ireportcorruption',
-                user = 'postgres',
-                password = 'pstgress'
+                database = 'd6rj7op0kiemhj',
+                user = 'vqnnycwveqoafo',
+                password = 'f798eb885d0d3f0fdfb0d5e013808ae716c38af1de7bc34d75648c01af036e10',
+                host = 'ec2-50-17-193-83.compute-1.amazonaws.com'
             )
+            
             self.conn = psycopg2.connect(**self.connection)
             self.conn.autocommit = True
             self.cursor = self.conn.cursor()
