@@ -40,6 +40,19 @@ def register_user():
         return jsonify({'message':'some fields are missing or incorrect'}),400
 
     
+    if not  validate_input.validate_string_input(firstname):
+        return jsonify({'message':'You have an invalid firstname or the firstname is missing'})
+
+    if not  validate_input.validate_string_input(lastname):
+        return jsonify({'message':'You have an invalid lastime or the lastname is missing'})
+
+    if not validate_input.validate_digits_input(password):
+        return jsonify({'message':'You have an invalid password or the password is missing'})
+
+
+    if not validate_input.validate_digits_input(phonenumber):
+        return jsonify({'message':'You have an invalid phonenumber or the phonenumder is missing'})
+
 
     
     if not validate_input.validate_email(email):

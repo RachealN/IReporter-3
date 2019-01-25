@@ -1,7 +1,10 @@
 import psycopg2
 from psycopg2.extras import RealDictCursor
 from flask import Flask,jsonify
-import os
+from os import environ
+
+
+
 
 class DatabaseConnection:
     def __init__(self):
@@ -11,7 +14,9 @@ class DatabaseConnection:
                 user = 'postgres',
                 password = 'pstgress'
             )
+           
             self.conn = psycopg2.connect(**self.connection)
+            
             self.conn.autocommit = True
             self.cursor = self.conn.cursor()
             self.dict_cursor = self.conn.cursor(cursor_factory=RealDictCursor)
@@ -43,8 +48,8 @@ class DatabaseConnection:
         create_redflags_table = (
             """CREATE TABLE IF NOT EXISTS
             redflags(
-                redflag_id SERIAL PRIMARY KEY NOT NULL,
-                createdBy SERIAL REFERENCES users(id) ON UPDATE CASCADE, 
+                incident_id SERIAL PRIMARY KEY NOT NULL,
+                createdBy SERIAL REFERENCES users(id) ON UPDATE CASCADE ON DELETE CASCADE, 
                 status VARCHAR(20),
                 createdOn TIMESTAMPTZ DEFAULT Now(),
                 location VARCHAR(30),
@@ -55,9 +60,9 @@ class DatabaseConnection:
 
         create_interventions_table = (
             """CREATE TABLE IF NOT EXISTS
-           interventions(
-                intervention_id SERIAL PRIMARY KEY NOT NULL,
-                createdBy SERIAL REFERENCES users(id) ON UPDATE CASCADE,
+           incidents(
+                incident_id SERIAL PRIMARY KEY NOT NULL,
+                createdBy SERIAL REFERENCES users(id) ON UPDATE CASCADE ON DELETE CASCADE,
                 status VARCHAR(20),
                 createdOn TIMESTAMPTZ DEFAULT Now(),
                 location VARCHAR(30),

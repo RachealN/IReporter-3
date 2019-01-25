@@ -6,35 +6,38 @@ from app.utilities.auth import AuthHelper
 con = DatabaseConnection()
 created = AuthHelper()
 
-class Intervention:
+class Incident:
     def __init__(self):
         pass
 
 
-    def create_intervention(self,status, location,image,video, comment):
+    def create_incident(self,status, location,image,video, comment):
 
            
         
-            create_intervention= "INSERT INTO interventions (status, location,image,video, comment) VALUES ('{}','{}','{}','{}','{}') RETURNING intervention_id".format(status,location,image,video,comment)
+            create_incident= "INSERT INTO incidents (status, location,image,video, comment) VALUES ('{}','{}','{}','{}','{}') RETURNING incident_id".format(status,location,image,video,comment)
             
-            con.dict_cursor.execute(create_intervention,(status,location,image,video,comment))
+            print(create_incident)
+            con.dict_cursor.execute(create_incident,(status,location,image,video,comment))
             return con.dict_cursor.fetchone()
+
+    
             
             
 
-    def update_location(self,location,intervention_id):
-        update_location = "UPDATE interventions SET location='{}' WHERE intervention_id='{}' RETURNING intervention_id".format(location,intervention_id)
+    def update_location(self,location,incident_id):
+        update_location = "UPDATE incidents SET location='{}' WHERE incident_id='{}' RETURNING incident_id".format(location,incident_id)
         con.dict_cursor.execute(update_location)
         return con.dict_cursor.fetchone()
 
     
-    def update_comment(self,comment,intervention_id):
-        update_comment = "UPDATE interventions SET comment='{}' WHERE intervention_id='{}' RETURNING intervention_id".format(comment,intervention_id)
+    def update_comment(self,comment,incident_id):
+        update_comment = "UPDATE incidents SET comment='{}' WHERE incident_id='{}' RETURNING incident_id".format(comment,incident_id)
         con.dict_cursor.execute(update_comment)
         return con.dict_cursor.fetchone()
 
-    def update_status(self,status,intervention_id):
-        update_status = "UPDATE interventions SET status='{}' WHERE intervention_id='{}' RETURNING intervention_id".format(status,intervention_id)
+    def update_status(self,status,incident_id):
+        update_status = "UPDATE incidents SET status='{}' WHERE incident_id='{}' RETURNING incident_id".format(status,incident_id)
         print(update_status)
         con.dict_cursor.execute(update_status)
         inter = con.dict_cursor.fetchone()
@@ -43,22 +46,22 @@ class Intervention:
 
     
 
-    def get_all_interventions(self):
+    def get_all_incidents(self):
         
-        get_all = "SELECT * FROM interventions"
+        get_all = "SELECT * FROM incidents"
         con.dict_cursor.execute(get_all)
-        interventions = con.dict_cursor.fetchall()
-        return interventions
+        incidents = con.dict_cursor.fetchall()
+        return incidents
 
-    def get_single_intervention(self, id):
+    def get_single_incident(self, id):
         
-        intervention_query = "SELECT * FROM interventions WHERE intervention_id=%s"
-        con.dict_cursor.execute(intervention_query, [id])
-        intervention = con.dict_cursor.fetchone()
-        return intervention
+        incident_query = "SELECT * FROM incidents WHERE incident_id=%s"
+        con.dict_cursor.execute(incident_query, [id])
+        incident = con.dict_cursor.fetchone()
+        return incident
 
-    def delete_intervention(self,intervention_id):
-        delete_record = "DELETE FROM interventions WHERE intervention_id='{0}'".format(intervention_id)
-        con.cursor.execute(delete_record, (intervention_id,))
+    def delete_incident(self,incident_id):
+        delete_record = "DELETE FROM interventions WHERE incident_id='{0}'".format(incident_id)
+        con.cursor.execute(delete_record, (incident_id,))
 
         

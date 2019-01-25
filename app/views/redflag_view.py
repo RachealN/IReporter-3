@@ -1,7 +1,7 @@
 from flask import Blueprint,request,json,jsonify
 from app.controller.users_controller import User
 from app.utilities.auth import AuthHelper
-from app.controller.redflag_contoller import Redflag
+from app.controller.interventions_controller import Incident
 from app.validation import Validator
 import datetime
 
@@ -10,7 +10,7 @@ import datetime
 redflag_blueprint = Blueprint("redflag_blueprint", __name__)
 
 validate_input = Validator()
-redflag_db = Redflag()
+redflag_db = Incident()
 required = AuthHelper()
 
 """Endpoint for the index page"""
@@ -56,8 +56,8 @@ def create_redflag(current_user):
     
     
     
-    redflag = redflag_db.create_redflag(status, location,image,video,comment)
-    redflagId = redflag_db.get_single_redflag(redflag['redflag_id'])
+    redflag = redflag_db.create_incident(status, location,image,video,comment)
+    redflagId = redflag_db.get_single_incident(redflag['incident_id'])
     
     current_user=current_user.get('sub')
     if current_user.get('isAdmin') is  False:
@@ -71,9 +71,9 @@ def create_redflag(current_user):
     }),201
 
 
-@redflag_blueprint.route('/redflags/<int:redflag_id>/status', methods = ['PATCH'])
+@redflag_blueprint.route('/redflags/<int:incident_id>/status', methods = ['PATCH'])
 @required.token_required
-def update_status(current_user,redflag_id):
+def update_status(current_user,incident_id):
     
     """Endpoint for updating redflag status"""
 
@@ -84,9 +84,9 @@ def update_status(current_user,redflag_id):
     if not (validate_input.validate_string_input(status)):
         return jsonify({"message": "status Field should contain a string"}), 400
 
-    redflug = redflag_db.patch_redflag_status(status,redflag_id)
+    redflug = redflag_db.update_status(status,incident_id)
     print(str(redflug)+"******")
-    redflagId = redflag_db.get_single_redflag(redflug['redflag_id'])
+    redflagId = redflag_db.get_single_incident(redflug['incident_id'])
     
    
     
@@ -113,7 +113,7 @@ def get_redflags(current_user):
     """Endpoint for fetching all redflags"""
 
    
-    redflags = redflag_db.get_all_redflags()
+    redflags = redflag_db.get_all_incidents()
     if not redflags:
         return jsonify({
             'status':400,
@@ -131,14 +131,14 @@ def get_redflags(current_user):
         'data': redflags
     }),200
 
-@redflag_blueprint.route('/redflags/<int:redflag_id>', methods = ["GET"])
+@redflag_blueprint.route('/redflags/<int:incident_id>', methods = ["GET"])
 @required.token_required
-def get_single_redflag(current_user,redflag_id):
+def get_single_redflag(current_user,incident_id):
 
     """Endpoint for fetching a specific redflag"""
     
     
-    redflag = redflag_db.get_single_redflag(redflag_id)
+    redflag = redflag_db.get_single_incident(incident_id)
 
     if not redflag:
         return jsonify({
@@ -156,15 +156,15 @@ def get_single_redflag(current_user,redflag_id):
         'data': redflag
         }),200
 
-@redflag_blueprint.route('/redflags/<int:redflag_id>', methods = ["DELETE"])
+@redflag_blueprint.route('/redflags/<int:incident_id>', methods = ["DELETE"])
 @required.token_required
-def delete_redflag(current_user,redflag_id):
+def delete_redflag(current_user,incident_id):
     
     """Endpoint for deleting redflag"""
     
     
-    flag = redflag_db.get_single_redflag(redflag_id)
-    redflagId = redflag_db.get_single_redflag(redflag_id)
+    flag = redflag_db.get_single_incident(incident_id)
+    redflagId = redflag_db.get_single_incident(incident_id)
 
     if not  flag:
         return jsonify({
@@ -178,10 +178,10 @@ def delete_redflag(current_user,redflag_id):
             'message':'You  cannot perform this function'
         }),401
 
-    redflag_db.delete_redflag(redflag_id)
+    redflag_db.delete_incident(incident_id)
     return jsonify({
        'status':200,
-       'data':[{'id':redflag_id,'message': 'Redflag record has been deleted'}]
+       'data':[{'id':incident_id,'message': 'Redflag record has been deleted'}]
     }),200
 
 

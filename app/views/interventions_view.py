@@ -1,5 +1,5 @@
 from flask import Blueprint,request,json,jsonify
-from app.controller.interventions_controller import Intervention
+from app.controller.interventions_controller import Incident
 from app.controller.users_controller import User
 from app.utilities.auth import AuthHelper
 from app.validation import Validator
@@ -11,7 +11,7 @@ import datetime
 intervention_blueprint = Blueprint("intervention_blueprint",__name__)
 
 validate_input = Validator()
-intervention_db = Intervention()
+intervention_db = Incident()
 required = AuthHelper()
 
 
@@ -45,11 +45,12 @@ def create_intervention(current_user):
         return jsonify({"message": "video Field should contain strings"}), 400
     
     
-    record = intervention_db.create_intervention(status, location,image,video,comment)
+    record = intervention_db.create_incident(status, location,image,video,comment)
     print(record)
-    interventionId = intervention_db.get_single_intervention(record['intervention_id'])
+    interventionId = intervention_db.get_single_incident(record['incident_id'])
     
     current_user=current_user.get('sub')
+    print(current_user.get('isAdmin'))
     if current_user.get('isAdmin') is  False:
         return jsonify({
             'message':'You  cannot perform this function'
@@ -59,9 +60,9 @@ def create_intervention(current_user):
                     'data':[{'id':record['intervention_id'],'message':'intervention record created'}]
     }),201
 
-@intervention_blueprint.route('/interventions/<int:intervention_id>/location', methods = ['PATCH'])
+@intervention_blueprint.route('/interventions/<int:incident_id>/location', methods = ['PATCH'])
 @required.token_required
-def patch_location(current_user,intervention_id):
+def patch_location(current_user,incident_id):
 
     """Endpoint forupdating location"""
 
@@ -76,8 +77,8 @@ def patch_location(current_user,intervention_id):
         return jsonify({"message": "location Field should contain an integer"}), 400
         
    
-    intervien = intervention_db.update_location(location,intervention_id)
-    interventionId = intervention_db.get_single_intervention(intervien['intervention_id'])
+    intervien = intervention_db.update_location(location,incident_id)
+    interventionId = intervention_db.get_single_incident(intervien['incident_id'])
 
     
     if not intervien:
@@ -96,9 +97,9 @@ def patch_location(current_user,intervention_id):
                     }), 200
     
 
-@intervention_blueprint.route('/interventions/<int:intervention_id>/comment', methods = ['PATCH'])
+@intervention_blueprint.route('/interventions/<int:incident_id>/comment', methods = ['PATCH'])
 @required.token_required
-def patch_comment(current_user,intervention_id):
+def patch_comment(current_user,incident_id):
 
     """Endpoint for updating comment"""
 
@@ -110,8 +111,8 @@ def patch_comment(current_user,intervention_id):
         return jsonify({"message": "comment Field should contain a string"}), 400
         
    
-    intervien = intervention_db.update_comment(comment,intervention_id)
-    interventionId = intervention_db.get_single_intervention(intervien['intervention_id'])
+    intervien = intervention_db.update_comment(comment,incident_id)
+    interventionId = intervention_db.get_single_incident(intervien['incident_id'])
 
     if not intervien:
         return jsonify({
@@ -129,9 +130,9 @@ def patch_comment(current_user,intervention_id):
                     "data":[{'id':intervien['intervention_id'], 'message':"Updated intervention record’s comment"}]
                     }), 200
 
-@intervention_blueprint.route('/interventions/<int:intervention_id>/status', methods = ['PATCH'])
+@intervention_blueprint.route('/interventions/<int:incident_id>/status', methods = ['PATCH'])
 @required.token_required
-def update_status(current_user,intervention_id):
+def update_status(current_user,incident_id):
 
     """Endpoint for updating status"""
 
@@ -145,9 +146,9 @@ def update_status(current_user,intervention_id):
     if len(request_data.keys()) != 1:
         return jsonify({"message": "Some fields are missing"}), 400
 
-    intervien = intervention_db.update_status(status,intervention_id)
+    intervien = intervention_db.update_status(status,incident_id)
     print(intervien)
-    interventionId = intervention_db.get_single_intervention(intervien['intervention_id'])
+    interventionId = intervention_db.get_single_incident(intervien['incident_id'])
    
     
     if not interventionId or interventionId['status'] == 'rejected':
@@ -170,15 +171,15 @@ def update_status(current_user,intervention_id):
                     }), 200
 
             
-@intervention_blueprint.route('/interventions/<int:intervention_id>', methods = ["DELETE"])
+@intervention_blueprint.route('/interventions/<int:incident_id>', methods = ["DELETE"])
 @required.token_required
-def delete_intervention(current_user,intervention_id):
+def delete_intervention(current_user,incident_id):
 
     """Endpoint for deleting intervention """
     
     
-    intervien = intervention_db.get_single_intervention(intervention_id)
-    interventionId = intervention_db.get_single_intervention(intervention_id)
+    intervien = intervention_db.get_single_incident(incident_id)
+    interventionId = intervention_db.get_single_incident(incident_id)
 
     if not  intervien:
         return jsonify({
@@ -193,20 +194,20 @@ def delete_intervention(current_user,intervention_id):
         }),401
 
 
-    intervention_db.delete_intervention(intervention_id)
+    intervention_db.delete_incident(incident_id)
     return jsonify({
        'status':200,
-       'data':[{'id':intervention_id,'message': 'intervention record has been deleted'}]
+       'data':[{'id':incident_id,'message': 'intervention record has been deleted'}]
     }),200
 
-@intervention_blueprint.route('/interventions/<int:intervention_id>', methods = ["GET"])
+@intervention_blueprint.route('/interventions/<int:incident_id>', methods = ["GET"])
 @required.token_required
-def get_single_intervention(current_user,intervention_id):
+def get_single_intervention(current_user,incident_id):
 
     """Endpoint for getting a specific intervention"""
     
     
-    intervention = intervention_db.get_single_intervention(intervention_id)
+    intervention = intervention_db.get_single_incident(incident_id)
 
     if not intervention:
         return jsonify({
@@ -232,7 +233,7 @@ def get_interventions(current_user):
     """Endpoint for getting intervention"""
 
    
-    interventions = intervention_db.get_all_interventions()
+    interventions = intervention_db.get_all_incidents()
     if not interventions:
         return jsonify({
             'status':400,
