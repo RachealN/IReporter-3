@@ -24,6 +24,7 @@ def create_intervention(current_user):
     
     
     request_data = request.get_json(force=True)
+    incidentType = 'intervention'
     status = 'pending'
     createdOn = datetime.date.today().strftime('%Y-%m-%d')
     location = request_data['location']
@@ -43,9 +44,12 @@ def create_intervention(current_user):
     
     if not (validate_input.validate_string_input(video)):
         return jsonify({"message": "video Field should contain strings"}), 400
+
+    if not (validate_input.validate_string_input(incidentType)):
+        return jsonify({"message": "incidentType Field should contain strings"}), 400
     
     
-    record = intervention_db.create_incident(status, location,image,video,comment)
+    record = intervention_db.create_incident(incidentType,status, location,image,video,comment)
     print(record)
     interventionId = intervention_db.get_single_incident(record['incident_id'])
     
@@ -57,7 +61,7 @@ def create_intervention(current_user):
         }),401
 
     return jsonify({'status':201,
-                    'data':[{'id':record['intervention_id'],'message':'intervention record created'}]
+                    'data':[{'id':record['incident_id'],'message':'intervention record created'}]
     }),201
 
 @intervention_blueprint.route('/interventions/<int:incident_id>/location', methods = ['PATCH'])
@@ -93,7 +97,7 @@ def patch_location(current_user,incident_id):
             'message':'You  cannot perform this function'
         }),401
     return jsonify({"status": 200,
-                    "data":[{'id':intervien['intervention_id'], 'message':"Updated intervention record’s location"}]
+                    "data":[{'id':intervien['incident_id'], 'message':"Updated intervention record’s location"}]
                     }), 200
     
 
@@ -127,7 +131,7 @@ def patch_comment(current_user,incident_id):
         }),401
 
     return jsonify({"status": 200,
-                    "data":[{'id':intervien['intervention_id'], 'message':"Updated intervention record’s comment"}]
+                    "data":[{'id':intervien['incident_id'], 'message':"Updated intervention record’s comment"}]
                     }), 200
 
 @intervention_blueprint.route('/interventions/<int:incident_id>/status', methods = ['PATCH'])

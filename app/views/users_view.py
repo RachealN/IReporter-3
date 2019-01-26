@@ -35,9 +35,9 @@ def register_user():
     validate_password = Validator().validate_password(password)
     validate_phonenumber = Validator().validate_digits_input(phonenumber)
 
-    if not validate_email or not validate_lastname or not validate_password \
-    or not validate_phonenumber or not validate_firstname:
-        return jsonify({'message':'some fields are missing or incorrect'}),400
+    
+    if not validate_input.validate_email(email):
+        return jsonify({'message':'You have an email or email is missing'})
 
     
     if not  validate_input.validate_string_input(firstname):

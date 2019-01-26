@@ -1,7 +1,7 @@
 import psycopg2
 from psycopg2.extras import RealDictCursor
 from flask import Flask,jsonify
-from os import environ
+import os 
 
 
 
@@ -9,17 +9,28 @@ from os import environ
 class DatabaseConnection:
     def __init__(self):
         try:
-            self.connection = dict(
-                database = 'ireportcorruption',
-                user = 'postgres',
-                password = 'pstgress'
-            )
-           
-            self.conn = psycopg2.connect(**self.connection)
+            if os.getenv('APP_SETTING') == 'testing':
+                self.connection = dict(
+                    database = 'testing',
+                    user = 'postgres',
+                    host = 'localhost',
+                    port = '5432'
+
+                )
+                self.cursor = self.conn.cursor()
+                self.dict_cursor = self.conn.cursor(cursor_factory=RealDictCursor)
+            else:
+                self.connection = dict(
+                    database = 'ireportcorruption',
+                    user = 'postgres',
+                    password = 'pstgress'
+                )
             
-            self.conn.autocommit = True
-            self.cursor = self.conn.cursor()
-            self.dict_cursor = self.conn.cursor(cursor_factory=RealDictCursor)
+                self.conn = psycopg2.connect(**self.connection)
+                
+                self.conn.autocommit = True
+                self.cursor = self.conn.cursor()
+                self.dict_cursor = self.conn.cursor(cursor_factory=RealDictCursor)
 
         except Exception:
             return jsonify({"message": "Cannot connect to database"})
@@ -44,24 +55,11 @@ class DatabaseConnection:
         )
         
 
-       
-        create_redflags_table = (
-            """CREATE TABLE IF NOT EXISTS
-            redflags(
-                incident_id SERIAL PRIMARY KEY NOT NULL,
-                createdBy SERIAL REFERENCES users(id) ON UPDATE CASCADE ON DELETE CASCADE, 
-                status VARCHAR(20),
-                createdOn TIMESTAMPTZ DEFAULT Now(),
-                location VARCHAR(30),
-                image VARCHAR(30),
-                video VARCHAR(30),
-                comment VARCHAR(100)
-                );""")
-
-        create_interventions_table = (
+        create_incidents_table = (
             """CREATE TABLE IF NOT EXISTS
            incidents(
                 incident_id SERIAL PRIMARY KEY NOT NULL,
+                incidentType VARCHAR(30),
                 createdBy SERIAL REFERENCES users(id) ON UPDATE CASCADE ON DELETE CASCADE,
                 status VARCHAR(20),
                 createdOn TIMESTAMPTZ DEFAULT Now(),
@@ -77,8 +75,7 @@ class DatabaseConnection:
             execute cursor object to create tables
         """
         self.cursor.execute(create_users_table)
-        self.cursor.execute(create_redflags_table)
-        self.cursor.execute(create_interventions_table)
+        self.cursor.execute(create_incidents_table)
         
         
     def drop_table(self, table_name):

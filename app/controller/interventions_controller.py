@@ -11,14 +11,14 @@ class Incident:
         pass
 
 
-    def create_incident(self,status, location,image,video, comment):
+    def create_incident(self,incidentType,status, location,image,video, comment):
 
            
         
-            create_incident= "INSERT INTO incidents (status, location,image,video, comment) VALUES ('{}','{}','{}','{}','{}') RETURNING incident_id".format(status,location,image,video,comment)
+            create_incident= "INSERT INTO incidents (incidentType,status, location,image,video, comment) VALUES ('{}','{}','{}','{}','{}','{}') RETURNING incident_id".format(incidentType,status,location,image,video,comment)
             
             print(create_incident)
-            con.dict_cursor.execute(create_incident,(status,location,image,video,comment))
+            con.dict_cursor.execute(create_incident,(incidentType,status,location,image,video,comment))
             return con.dict_cursor.fetchone()
 
     
@@ -61,7 +61,7 @@ class Incident:
         return incident
 
     def delete_incident(self,incident_id):
-        delete_record = "DELETE FROM interventions WHERE incident_id='{0}'".format(incident_id)
+        delete_record = "DELETE FROM incidents WHERE incident_id='{0}'".format(incident_id)
         con.cursor.execute(delete_record, (incident_id,))
 
         

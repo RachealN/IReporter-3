@@ -1,7 +1,6 @@
 [![Build Status](https://travis-ci.org/RachealN/IReporter-3.svg?branch=develop)](https://travis-ci.org/RachealN/IReporter-3)
 [![Coverage Status](https://coveralls.io/repos/github/RachealN/IReporter-3/badge.svg?branch=develop)](https://coveralls.io/github/RachealN/IReporter-3?branch=develop)
 [![Maintainability](https://api.codeclimate.com/v1/badges/9af5ddd03ddedb899317/maintainability)](https://codeclimate.com/github/RachealN/IReporter-3/maintainability)
-[![Test Coverage](https://api.codeclimate.com/v1/badges/9af5ddd03ddedb899317/test_coverage)](https://codeclimate.com/github/RachealN/IReporter-3/test_coverage)
 
 # IReporter-3
 
@@ -44,7 +43,7 @@ Navigate to the directory where the project was cloned and run this command
 
 # Project link
 
-https://github.com/RachealN/i-Reporter-API/tree/develop
+https://github.com/RachealN/IReporter-3
 
 # Features
 
@@ -128,8 +127,9 @@ or this to run tests without coverage
 
 ```pytest```
 
-#Link to Heroku
+# Link to Heroku
 
+https://ireporter10.herokuapp.com/api/v1/
 
 
 

@@ -2,9 +2,11 @@ import unittest
 from  app.views import redflag_view
 from app.views import interventions_view
 from app import initialize_app
+from app.models.database import DatabaseConnection
 import json
 
 
+db = DatabaseConnection() 
 class TestBase(unittest.TestCase):
     
     def setUp(self):
@@ -12,6 +14,7 @@ class TestBase(unittest.TestCase):
 
         self.app = initialize_app()
         self.client = self.app.test_client(self)
+        
 
         self.redflag=dict(
             comment = "corruption",
@@ -45,13 +48,12 @@ class TestBase(unittest.TestCase):
         
 
         self.user = dict(
-            firstname = "okello peter",
-            lastname = "opio",
-            id = 23,
-            email = "hope@gmail.com",
-            username = "okello",
-            password = "12879578",
-            phonenumber = "705647463",
+            firstname = "henry",
+            lastname = "john",
+            email = "keti@gmail.com",
+            username = "tom",
+            password = "12345678",
+            phonenumber = "0705647463"
            
         ) 
        
@@ -60,7 +62,7 @@ class TestBase(unittest.TestCase):
 
    
         self.credential = dict(
-            email = "hope@gmail.com",
+            email = "keti@gmail.com",
             password = "12879578",
         )
         self.credentials_empty = []
@@ -68,11 +70,8 @@ class TestBase(unittest.TestCase):
 
     
         
-    def tearDown(self):
+    def tearDown(self,table_name):
+        db.drop_table(incidents)
         
-       self.redflags.clear()
-       self.users.clear()
-       self.interventions.clear()
-
 
     

@@ -32,6 +32,7 @@ def create_redflag(current_user):
     
 
     request_data = request.get_json(force=True)
+    incidentType = 'redflag'
     status = 'pending'
     createdOn = datetime.date.today().strftime('%Y-%m-%d')
     location = request_data['location']
@@ -52,11 +53,16 @@ def create_redflag(current_user):
     
     if not (validate_input.validate_string_input(video)):
         return jsonify({"message": "video Field should contain strings"}), 400
+
+    if not (validate_input.validate_string_input(incidentType)):
+        return jsonify({"message": "incidentType Field should contain strings"}), 400
     
     
     
     
-    redflag = redflag_db.create_incident(status, location,image,video,comment)
+    
+    
+    redflag = redflag_db.create_incident(incidentType,status, location,image,video,comment)
     redflagId = redflag_db.get_single_incident(redflag['incident_id'])
     
     current_user=current_user.get('sub')
@@ -67,7 +73,7 @@ def create_redflag(current_user):
    
 
     return jsonify({'status':201,
-                    'data':[{'id':redflag['redflag_id'],'message':'Redflag record created'}]
+                    'data':[{'id':redflag['incident_id'],'message':'Redflag record created'}]
     }),201
 
 
